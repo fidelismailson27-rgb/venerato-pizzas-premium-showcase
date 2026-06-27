@@ -142,9 +142,14 @@ function AdminPage() {
             onChange={(url) => setContent({ ...content, logoUrl: url })}
           />
           <TextField
-            label="Link do WAbiz (todos os botões de pedido)"
+            label="Link do WAbiz (botões de pedido)"
             value={content.wabizUrl}
             onChange={(v) => setContent({ ...content, wabizUrl: v })}
+          />
+          <TextField
+            label="Link do WhatsApp (wa.me)"
+            value={content.whatsappUrl}
+            onChange={(v) => setContent({ ...content, whatsappUrl: v })}
           />
           <TextField
             label="Instagram"
