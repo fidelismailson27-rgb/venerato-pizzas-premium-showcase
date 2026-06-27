@@ -375,5 +375,3 @@ function Footer({ c }: { c: SiteContent }) {
   );
 }
 
-function useRouterUnused() { return useRouter(); }
-void useRouterUnused;
