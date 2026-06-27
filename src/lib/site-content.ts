@@ -50,9 +50,16 @@ export type SiteContent = {
   unidades: Unidade[];
 };
 
-// Stable CDN URLs from src/assets/*.asset.json — safe as defaults.
-const LOGO = "/__l5e/assets-v1/30e663a8-c85f-4a05-be3e-73f9c3126621/venerato-logo.png";
-const HERO = "/src/assets/hero-pizza.jpg";
+// Asset URLs resolved by Vite (works in server + client bundles).
+import LOGO_ASSET from "@/assets/venerato-logo.png.asset.json";
+import HERO_URL from "@/assets/hero-pizza.jpg";
+import PUDIM_URL from "@/assets/destaque-pudim.jpg";
+import EMPADAS_URL from "@/assets/destaque-empadas.jpg";
+import PIZZA_DIA_URL from "@/assets/destaque-pizza-dia.jpg";
+import COMBOS_URL from "@/assets/destaque-combos.jpg";
+import BEBIDAS_URL from "@/assets/destaque-bebidas.jpg";
+
+const LOGO = LOGO_ASSET.url;
 
 export const DEFAULT_CONTENT: SiteContent = {
   logoUrl: LOGO,
@@ -64,8 +71,8 @@ export const DEFAULT_CONTENT: SiteContent = {
     titleHighlight: "Taboão da Serra",
     subtitle: "Muito recheio, ingredientes selecionados e sabor de verdade.",
     mediaType: "image",
-    mediaUrl: HERO,
-    fallbackImageUrl: HERO,
+    mediaUrl: HERO_URL,
+    fallbackImageUrl: HERO_URL,
   },
   about: {
     eyebrow: "Quem somos",
@@ -74,7 +81,7 @@ export const DEFAULT_CONTENT: SiteContent = {
       "A Venerato nasceu da paixão por uma pizza honesta — massa fermentada com paciência, molho feito do zero e ingredientes que a gente escolheria pra comer em casa.",
     paragraph2:
       "Crescemos em Taboão da Serra atendendo cliente por cliente, mesa por mesa. Hoje, com unidades em Campo Limpo e Jd. Dracena, levamos esse mesmo cuidado direto até você.",
-    imageUrl: HERO,
+    imageUrl: HERO_URL,
     stats: [
       { n: "+10", l: "anos de forno" },
       { n: "2", l: "unidades" },
@@ -82,11 +89,11 @@ export const DEFAULT_CONTENT: SiteContent = {
     ],
   },
   destaques: [
-    { id: "1", nome: "Pudim no Copo", desc: "Cremoso, na medida certa.", imgUrl: "/src/assets/destaque-pudim.jpg" },
-    { id: "2", nome: "Empadas Artesanais", desc: "Massa amanteigada, recheio generoso.", imgUrl: "/src/assets/destaque-empadas.jpg" },
-    { id: "3", nome: "Venerato do Dia", desc: "A pizza que todo mundo pede de novo.", imgUrl: "/src/assets/destaque-pizza-dia.jpg" },
-    { id: "4", nome: "Combos", desc: "Pizza + bebida + sobremesa.", imgUrl: "/src/assets/destaque-combos.jpg" },
-    { id: "5", nome: "Bebidas", desc: "Geladinhas pra acompanhar.", imgUrl: "/src/assets/destaque-bebidas.jpg" },
+    { id: "1", nome: "Pudim no Copo", desc: "Cremoso, na medida certa.", imgUrl: PUDIM_URL },
+    { id: "2", nome: "Empadas Artesanais", desc: "Massa amanteigada, recheio generoso.", imgUrl: EMPADAS_URL },
+    { id: "3", nome: "Venerato do Dia", desc: "A pizza que todo mundo pede de novo.", imgUrl: PIZZA_DIA_URL },
+    { id: "4", nome: "Combos", desc: "Pizza + bebida + sobremesa.", imgUrl: COMBOS_URL },
+    { id: "5", nome: "Bebidas", desc: "Geladinhas pra acompanhar.", imgUrl: BEBIDAS_URL },
   ],
   banner: {
     enabled: false,
