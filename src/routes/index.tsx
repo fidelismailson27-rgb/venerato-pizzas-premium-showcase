@@ -4,6 +4,7 @@ import logoAsset from "@/assets/venerato-logo.png.asset.json";
 import heroPizza from "@/assets/hero-pizza.jpg";
 import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
+import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,53 +69,22 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-function ExtLink({ href, className, children, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className} {...rest}>
-      {children}
-    </a>
-  );
-}
-
 function Home() {
   const initial = Route.useLoaderData() as SiteContent;
   const [c, setC] = useState<SiteContent>(initial ?? DEFAULT_CONTENT);
-
-  // Re-fetch on client mount so admins see edits without a hard refresh.
   useEffect(() => { setC(initial); }, [initial]);
 
   return (
     <div className="relative">
-      <Navbar c={c} />
+      <SiteNav c={c} />
       <Hero c={c} />
       {c.banner.enabled && <BannerPromo c={c} />}
       <Destaques c={c} />
       <Sobre c={c} />
       <Unidades c={c} />
       <CtaFinal c={c} />
-      <Footer c={c} />
+      <SiteFooter c={c} />
     </div>
-  );
-}
-
-function Navbar({ c }: { c: SiteContent }) {
-  return (
-    <header className="fixed top-3 left-1/2 z-50 w-[min(96%,1100px)] -translate-x-1/2">
-      <nav className="glass-strong flex items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-5">
-        <a href="#top" className="flex items-center gap-2 pl-1">
-          <img src={c.logoUrl} alt="Venerato Pizzas" className="h-9 w-auto sm:h-10" />
-        </a>
-        <div className="hidden items-center gap-7 text-sm text-foreground/80 md:flex">
-          <a href="#destaques" className="hover:text-gold transition-colors">Destaques</a>
-          <a href="#sobre" className="hover:text-gold transition-colors">Sobre</a>
-          <a href="#unidades" className="hover:text-gold transition-colors">Unidades</a>
-          <ExtLink href={c.instagramUrl} className="hover:text-gold transition-colors">Instagram</ExtLink>
-        </div>
-        <ExtLink href={c.wabizUrl} className="btn-primary !px-4 !py-2 text-sm">
-          Pedir agora
-        </ExtLink>
-      </nav>
-    </header>
   );
 }
 
@@ -174,8 +144,8 @@ function Hero({ c }: { c: SiteContent }) {
         <p className="mt-5 max-w-xl text-base text-foreground/80 sm:text-lg">{c.hero.subtitle}</p>
         <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center">
           <ExtLink href={c.wabizUrl} className="btn-primary">🍕 Fazer Pedido</ExtLink>
-          <a href="#destaques" className="btn-secondary">Ver Cardápio</a>
-          <ExtLink href={c.wabizUrl} className="btn-whatsapp">Pedir pelo WhatsApp</ExtLink>
+          <a href="#destaques" className="btn-secondary">Ver Destaques</a>
+          <ExtLink href={c.whatsappUrl} className="btn-whatsapp">Falar no WhatsApp</ExtLink>
         </div>
         <a href="#destaques" className="mt-14 text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-gold transition-colors">
           ↓ Veja os destaques
@@ -227,7 +197,7 @@ function Destaques({ c }: { c: SiteContent }) {
                   loading="lazy"
                   width={800}
                   height={600}
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/__l5e/assets-v1/30e663a8-c85f-4a05-be3e-73f9c3126621/venerato-logo.png"; }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = c.logoUrl; }}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -320,58 +290,12 @@ function CtaFinal({ c }: { c: SiteContent }) {
           <p className="mx-auto mt-4 max-w-lg text-foreground/80">
             Em poucos cliques sua Venerato já está a caminho. Pedido direto no WAbiz.
           </p>
-          <ExtLink href={c.wabizUrl} className="btn-primary mt-8 !px-10 !py-4 text-base">🍕 Fazer Pedido</ExtLink>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <ExtLink href={c.wabizUrl} className="btn-primary !px-10 !py-4 text-base">🍕 Fazer Pedido</ExtLink>
+            <ExtLink href={c.whatsappUrl} className="btn-whatsapp !px-8 !py-4 text-base">Falar no WhatsApp</ExtLink>
+          </div>
         </div>
       </div>
     </section>
   );
 }
-
-function Footer({ c }: { c: SiteContent }) {
-  return (
-    <footer className="border-t border-white/5 pt-16 pb-10">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <img src={c.logoUrl} alt="Venerato Pizzas" className="h-16 w-auto" />
-          <p className="mt-4 max-w-sm text-sm text-foreground/65">
-            Pizzaria premium em São Paulo e Taboão da Serra. Sabor de verdade, direto do nosso forno até a sua mesa.
-          </p>
-          <ExtLink href={c.instagramUrl} className="mt-5 inline-flex items-center gap-2 text-sm text-gold hover:underline">
-            <span>📷</span> @veneratopizzas
-          </ExtLink>
-        </div>
-
-        <div>
-          <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-gold">Links</h4>
-          <ul className="space-y-2 text-sm text-foreground/75">
-            <li><a href="#destaques" className="hover:text-gold">Destaques</a></li>
-            <li><a href="#sobre" className="hover:text-gold">Sobre</a></li>
-            <li><a href="#unidades" className="hover:text-gold">Unidades</a></li>
-            <li><ExtLink href={c.wabizUrl} className="hover:text-gold">Fazer pedido</ExtLink></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-gold">Unidades</h4>
-          <ul className="space-y-3 text-sm text-foreground/75">
-            {c.unidades.map((u) => (
-              <li key={u.id}>
-                <div className="font-semibold text-foreground">{u.nome}</div>
-                <div className="text-xs">{u.endereco}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className="mx-auto mt-12 max-w-6xl border-t border-white/5 px-5 pt-6 text-center text-xs text-foreground/50">
-        <p>
-          Os pedidos são processados pela plataforma{" "}
-          <ExtLink href={c.wabizUrl} className="text-gold hover:underline">WAbiz</ExtLink>.
-        </p>
-        <p className="mt-2">© {new Date().getFullYear()} Venerato Pizzas. Todos os direitos reservados.</p>
-      </div>
-    </footer>
-  );
-}
-

@@ -6,6 +6,9 @@ import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions"
 import {
   DEFAULT_CONTENT,
   type Destaque,
+  type GaleriaImagem,
+  type MenuCategoria,
+  type MenuItem,
   type SiteContent,
   type Unidade,
 } from "@/lib/site-content";
@@ -139,9 +142,14 @@ function AdminPage() {
             onChange={(url) => setContent({ ...content, logoUrl: url })}
           />
           <TextField
-            label="Link do WAbiz (todos os botões de pedido)"
+            label="Link do WAbiz (botões de pedido)"
             value={content.wabizUrl}
             onChange={(v) => setContent({ ...content, wabizUrl: v })}
+          />
+          <TextField
+            label="Link do WhatsApp (wa.me)"
+            value={content.whatsappUrl}
+            onChange={(v) => setContent({ ...content, whatsappUrl: v })}
           />
           <TextField
             label="Instagram"
@@ -254,12 +262,58 @@ function AdminPage() {
           <ListEditor<Unidade>
             items={content.unidades}
             onChange={(items) => setContent({ ...content, unidades: items })}
-            newItem={() => ({ id: crypto.randomUUID(), nome: "Nova unidade", endereco: "", mapsUrl: "" })}
+            newItem={() => ({ id: crypto.randomUUID(), nome: "Nova unidade", cidade: "", endereco: "", mapsUrl: "" })}
             renderItem={(u, update) => (
               <>
                 <TextField label="Nome" value={u.nome} onChange={(v) => update({ ...u, nome: v })} />
+                <TextField label="Cidade / Estado" value={u.cidade ?? ""} onChange={(v) => update({ ...u, cidade: v })} />
                 <TextField label="Endereço completo" value={u.endereco} onChange={(v) => update({ ...u, endereco: v })} />
                 <TextField label="Link Google Maps" value={u.mapsUrl} onChange={(v) => update({ ...u, mapsUrl: v })} />
+              </>
+            )}
+          />
+        </Section>
+
+        <Section title="Cardápio (categorias e itens)">
+          <p className="text-xs text-foreground/60">
+            Cada categoria aparece como uma seção em <code>/cardapio</code>. Os itens são exibidos em grade.
+          </p>
+          <ListEditor<MenuCategoria>
+            items={content.cardapio}
+            onChange={(items) => setContent({ ...content, cardapio: items })}
+            newItem={() => ({ id: crypto.randomUUID(), nome: "Nova categoria", itens: [] })}
+            renderItem={(cat, update) => (
+              <>
+                <TextField label="Nome da categoria" value={cat.nome} onChange={(v) => update({ ...cat, nome: v })} />
+                <div className="rounded-xl border border-white/10 bg-white/[0.02] p-3">
+                  <div className="mb-2 text-xs uppercase tracking-wider text-foreground/60">Itens</div>
+                  <ListEditor<MenuItem>
+                    items={cat.itens}
+                    onChange={(itens) => update({ ...cat, itens })}
+                    newItem={() => ({ id: crypto.randomUUID(), nome: "Novo item", desc: "", imgUrl: "" })}
+                    renderItem={(it, upd) => (
+                      <>
+                        <TextField label="Nome" value={it.nome} onChange={(v) => upd({ ...it, nome: v })} />
+                        <TextField label="Descrição curta" value={it.desc} onChange={(v) => upd({ ...it, desc: v })} />
+                        <MediaField label="Imagem" value={it.imgUrl} accept="image/*" onChange={(url) => upd({ ...it, imgUrl: url })} />
+                      </>
+                    )}
+                  />
+                </div>
+              </>
+            )}
+          />
+        </Section>
+
+        <Section title="Galeria (página Sobre)">
+          <ListEditor<GaleriaImagem>
+            items={content.galeria}
+            onChange={(items) => setContent({ ...content, galeria: items })}
+            newItem={() => ({ id: crypto.randomUUID(), url: "", alt: "" })}
+            renderItem={(g, update) => (
+              <>
+                <MediaField label="Imagem" value={g.url} accept="image/*" onChange={(url) => update({ ...g, url })} />
+                <TextField label="Descrição (alt)" value={g.alt ?? ""} onChange={(v) => update({ ...g, alt: v })} />
               </>
             )}
           />

@@ -14,13 +14,34 @@ export type Destaque = {
 export type Unidade = {
   id: string;
   nome: string;
+  cidade?: string;
   endereco: string;
   mapsUrl: string;
+};
+
+export type MenuItem = {
+  id: string;
+  nome: string;
+  desc: string;
+  imgUrl: string;
+};
+
+export type MenuCategoria = {
+  id: string;
+  nome: string;
+  itens: MenuItem[];
+};
+
+export type GaleriaImagem = {
+  id: string;
+  url: string;
+  alt?: string;
 };
 
 export type SiteContent = {
   logoUrl: string;
   wabizUrl: string;
+  whatsappUrl: string;
   instagramUrl: string;
   hero: {
     badge: string;
@@ -48,6 +69,8 @@ export type SiteContent = {
     ctaText: string;
   };
   unidades: Unidade[];
+  cardapio: MenuCategoria[];
+  galeria: GaleriaImagem[];
 };
 
 // Asset URLs resolved by Vite (works in server + client bundles).
@@ -64,6 +87,8 @@ const LOGO = LOGO_ASSET.url;
 export const DEFAULT_CONTENT: SiteContent = {
   logoUrl: LOGO,
   wabizUrl: "https://veneratopizzas.wabiz.delivery/",
+  whatsappUrl:
+    "https://wa.me/5511947445932?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido%20na%20Venerato%20Pizzas.",
   instagramUrl: "https://instagram.com/veneratopizzas",
   hero: {
     badge: "Pizzaria Premium · SP & Taboão",
@@ -106,15 +131,79 @@ export const DEFAULT_CONTENT: SiteContent = {
     {
       id: "1",
       nome: "Campo Limpo",
+      cidade: "São Paulo - SP",
       endereco: "Rua Eliane de Araújo Neves, 90 — Campo Limpo, São Paulo - SP",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rua+Eliane+de+Araújo+Neves+90+Campo+Limpo+São+Paulo",
+      mapsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Rua+Eliane+de+Araújo+Neves+90+Campo+Limpo+São+Paulo",
     },
     {
       id: "2",
       nome: "Taboão — Jd. Dracena",
-      endereco: "Avenida Embaixador Assis Chateaubriand, 437 — Taboão da Serra - SP",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Av+Embaixador+Assis+Chateaubriand+437+Taboão+da+Serra",
+      cidade: "Taboão da Serra - SP",
+      endereco:
+        "Avenida Embaixador Assis Chateaubriand, 437 — Taboão da Serra - SP",
+      mapsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Av+Embaixador+Assis+Chateaubriand+437+Taboão+da+Serra",
     },
+  ],
+  cardapio: [
+    {
+      id: "cat-venerato-dia",
+      nome: "Venerato do Dia",
+      itens: [
+        { id: "v1", nome: "Venerato do Dia", desc: "A pizza que todo mundo pede de novo.", imgUrl: PIZZA_DIA_URL },
+      ],
+    },
+    {
+      id: "cat-pudim",
+      nome: "Pudim no Copo",
+      itens: [
+        { id: "p1", nome: "Pudim no Copo", desc: "Cremoso, na medida certa.", imgUrl: PUDIM_URL },
+      ],
+    },
+    {
+      id: "cat-empadas",
+      nome: "Empadas Artesanais",
+      itens: [
+        { id: "e1", nome: "Empada de Frango", desc: "Massa amanteigada, recheio generoso.", imgUrl: EMPADAS_URL },
+      ],
+    },
+    {
+      id: "cat-combos",
+      nome: "Combos",
+      itens: [
+        { id: "c1", nome: "Combo Família", desc: "Pizza + bebida + sobremesa.", imgUrl: COMBOS_URL },
+      ],
+    },
+    {
+      id: "cat-pizzas-grandes",
+      nome: "Pizzas Grandes",
+      itens: [
+        { id: "pg1", nome: "Mussarela", desc: "Clássica, generosa de queijo.", imgUrl: PIZZA_DIA_URL },
+      ],
+    },
+    {
+      id: "cat-pizzas-broto",
+      nome: "Pizzas Broto",
+      itens: [
+        { id: "pb1", nome: "Broto Mussarela", desc: "Tamanho individual, sabor inteiro.", imgUrl: PIZZA_DIA_URL },
+      ],
+    },
+    {
+      id: "cat-bebidas",
+      nome: "Bebidas",
+      itens: [
+        { id: "b1", nome: "Refrigerantes", desc: "Geladinhos pra acompanhar.", imgUrl: BEBIDAS_URL },
+      ],
+    },
+  ],
+  galeria: [
+    { id: "g1", url: HERO_URL, alt: "Pizza saindo do forno" },
+    { id: "g2", url: PIZZA_DIA_URL, alt: "Venerato do Dia" },
+    { id: "g3", url: COMBOS_URL, alt: "Combo Venerato" },
+    { id: "g4", url: EMPADAS_URL, alt: "Empadas artesanais" },
+    { id: "g5", url: PUDIM_URL, alt: "Pudim no copo" },
+    { id: "g6", url: BEBIDAS_URL, alt: "Bebidas geladas" },
   ],
 };
 
@@ -134,5 +223,7 @@ export function mergeContent(partial: Partial<SiteContent> | null | undefined): 
     banner: { ...DEFAULT_CONTENT.banner, ...(partial.banner ?? {}) },
     destaques: partial.destaques ?? DEFAULT_CONTENT.destaques,
     unidades: partial.unidades ?? DEFAULT_CONTENT.unidades,
+    cardapio: partial.cardapio ?? DEFAULT_CONTENT.cardapio,
+    galeria: partial.galeria ?? DEFAULT_CONTENT.galeria,
   };
 }
