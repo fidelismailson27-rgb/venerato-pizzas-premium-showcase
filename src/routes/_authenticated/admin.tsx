@@ -6,6 +6,9 @@ import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions"
 import {
   DEFAULT_CONTENT,
   type Destaque,
+  type GaleriaImagem,
+  type MenuCategoria,
+  type MenuItem,
   type SiteContent,
   type Unidade,
 } from "@/lib/site-content";
