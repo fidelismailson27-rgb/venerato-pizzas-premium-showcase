@@ -51,7 +51,11 @@ export const updateSiteContent = createServerFn({ method: "POST" })
 
     const { error } = await supabase
       .from("site_content")
-      .update({ content: data.content, updated_at: new Date().toISOString(), updated_by: userId })
+      .update({
+        content: data.content as never,
+        updated_at: new Date().toISOString(),
+        updated_by: userId,
+      })
       .eq("id", "main");
     if (error) throw new Error(error.message);
     return { ok: true as const };
