@@ -16,10 +16,12 @@ export function ExtLink({
 }
 
 export function SiteNav({ c }: { c: SiteContent }) {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
   return (
     <header className="fixed top-3 left-1/2 z-50 w-[min(96%,1100px)] -translate-x-1/2">
       <nav className="glass-strong flex items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-5">
-        <Link to="/" className="flex items-center gap-2 pl-1">
+        <Link to="/" className="flex items-center gap-2 pl-1" onClick={close}>
           <img src={c.logoUrl} alt="Venerato Pizzas" className="h-9 w-auto sm:h-10" />
         </Link>
         <div className="hidden items-center gap-6 text-sm text-foreground/80 md:flex">
@@ -29,10 +31,39 @@ export function SiteNav({ c }: { c: SiteContent }) {
           <Link to="/localizacao" className="hover:text-gold transition-colors">Localização</Link>
           <ExtLink href={c.instagramUrl} className="hover:text-gold transition-colors">Instagram</ExtLink>
         </div>
-        <ExtLink href={c.wabizUrl} className="btn-primary !px-4 !py-2 text-sm">
-          Pedir agora
-        </ExtLink>
+        <div className="flex items-center gap-2">
+          <ExtLink href={c.wabizUrl} className="btn-primary !px-4 !py-2 text-sm">
+            Pedir agora
+          </ExtLink>
+          <button
+            type="button"
+            aria-label="Abrir menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/5 text-foreground/90 md:hidden"
+          >
+            <span className="sr-only">Menu</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {open ? (
+                <><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></>
+              ) : (
+                <><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></>
+              )}
+            </svg>
+          </button>
+        </div>
       </nav>
+      {open && (
+        <div className="glass-strong mt-2 rounded-3xl px-4 py-4 md:hidden">
+          <ul className="flex flex-col gap-1 text-sm text-foreground/85">
+            <li><Link to="/" onClick={close} className="block rounded-xl px-3 py-2 hover:bg-white/5 hover:text-gold">Início</Link></li>
+            <li><Link to="/cardapio" onClick={close} className="block rounded-xl px-3 py-2 hover:bg-white/5 hover:text-gold">Cardápio</Link></li>
+            <li><Link to="/sobre" onClick={close} className="block rounded-xl px-3 py-2 hover:bg-white/5 hover:text-gold">Sobre</Link></li>
+            <li><Link to="/localizacao" onClick={close} className="block rounded-xl px-3 py-2 hover:bg-white/5 hover:text-gold">Localização</Link></li>
+            <li><ExtLink href={c.instagramUrl} onClick={close} className="block rounded-xl px-3 py-2 hover:bg-white/5 hover:text-gold">Instagram</ExtLink></li>
+          </ul>
+        </div>
+      )}
     </header>
   );
 }
