@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import type { SiteContent } from "@/lib/site-content";
 
 export function ExtLink({
