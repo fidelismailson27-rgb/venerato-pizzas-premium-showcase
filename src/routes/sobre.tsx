@@ -100,7 +100,7 @@ function SobrePage() {
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <ExtLink href={c.wabizUrl} className="btn-primary">🍕 Fazer Pedido</ExtLink>
-              <ExtLink href={c.whatsappUrl} className="btn-whatsapp">Falar no WhatsApp</ExtLink>
+              <ExtLink href={c.whatsappUrl} className="btn-whatsapp">WhatsApp</ExtLink>
             </div>
           </div>
         </section>

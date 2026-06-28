@@ -145,7 +145,7 @@ function Hero({ c }: { c: SiteContent }) {
         <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center">
           <ExtLink href={c.wabizUrl} className="btn-primary">🍕 Fazer Pedido</ExtLink>
           <a href="#destaques" className="btn-secondary">Ver Destaques</a>
-          <ExtLink href={c.whatsappUrl} className="btn-whatsapp">Falar no WhatsApp</ExtLink>
+          <ExtLink href={c.whatsappUrl} className="btn-whatsapp">WhatsApp</ExtLink>
         </div>
         <a href="#destaques" className="mt-14 text-xs uppercase tracking-[0.3em] text-foreground/50 hover:text-gold transition-colors">
           ↓ Veja os destaques
@@ -292,7 +292,7 @@ function CtaFinal({ c }: { c: SiteContent }) {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <ExtLink href={c.wabizUrl} className="btn-primary !px-10 !py-4 text-base">🍕 Fazer Pedido</ExtLink>
-            <ExtLink href={c.whatsappUrl} className="btn-whatsapp !px-8 !py-4 text-base">Falar no WhatsApp</ExtLink>
+            <ExtLink href={c.whatsappUrl} className="btn-whatsapp !px-8 !py-4 text-base">WhatsApp</ExtLink>
           </div>
         </div>
       </div>
