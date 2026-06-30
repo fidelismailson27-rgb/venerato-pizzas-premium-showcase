@@ -388,8 +388,13 @@ function MediaField({
     const isVideo = file.type.startsWith("video/");
     const limit = isVideo ? VID_LIMIT : IMG_LIMIT;
     if (file.size > limit) {
-      setError(`Arquivo grande (${formatBytes(file.size)}). Recomendado até ${formatBytes(limit)} para não pesar o site.`);
-      // continue anyway — warn, don't block
+      setError(
+        `Arquivo muito grande (${formatBytes(file.size)}). Limite: ${formatBytes(limit)} para ${
+          isVideo ? "vídeos" : "imagens"
+        }. Envie um arquivo menor.`,
+      );
+      setProgress(null);
+      return;
     }
 
     try {
