@@ -21,13 +21,14 @@ const SECURITY_HEADERS = {
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-    "frame-ancestors 'none'",
+    "frame-ancestors 'self' https://*.lovable.app https://*.lovable.dev https://lovable.dev",
     "upgrade-insecure-requests",
   ].join("; "),
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
-  "X-Frame-Options": "DENY",
+  // X-Frame-Options omitted intentionally — frame-ancestors above is the modern equivalent
+  // and supports the multi-origin allow-list required by the Lovable preview iframe.
 } as const;
 
 async function getServerEntry(): Promise<ServerEntry> {
