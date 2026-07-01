@@ -39,31 +39,47 @@ export const Route = createFileRoute("/")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Restaurant",
-          name: "Venerato Pizzas",
-          servesCuisine: "Pizza",
-          image: logoAsset.url,
-          url: "/",
-          sameAs: ["https://instagram.com/veneratopizzas"],
-          address: [
-            {
-              "@type": "PostalAddress",
-              streetAddress: "Rua Eliane de Araújo Neves, 90",
-              addressLocality: "São Paulo",
-              addressRegion: "SP",
-              addressCountry: "BR",
-            },
-            {
-              "@type": "PostalAddress",
-              streetAddress: "Avenida Embaixador Assis Chateaubriand, 437",
-              addressLocality: "Taboão da Serra",
-              addressRegion: "SP",
-              addressCountry: "BR",
-            },
-          ],
-        }),
+        children: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Venerato Pizzas",
+            url: SITE_URL,
+            logo: logoAsset.url,
+            sameAs: ["https://instagram.com/veneratopizzas"],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Venerato Pizzas",
+            url: SITE_URL,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Restaurant",
+            name: "Venerato Pizzas",
+            servesCuisine: "Pizza",
+            image: logoAsset.url,
+            url: SITE_URL,
+            sameAs: ["https://instagram.com/veneratopizzas"],
+            address: [
+              {
+                "@type": "PostalAddress",
+                streetAddress: "Rua Eliane de Araújo Neves, 90",
+                addressLocality: "São Paulo",
+                addressRegion: "SP",
+                addressCountry: "BR",
+              },
+              {
+                "@type": "PostalAddress",
+                streetAddress: "Avenida Embaixador Assis Chateaubriand, 437",
+                addressLocality: "Taboão da Serra",
+                addressRegion: "SP",
+                addressCountry: "BR",
+              },
+            ],
+          },
+        ]),
       },
     ],
   }),
