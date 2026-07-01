@@ -5,21 +5,20 @@ import heroPizza from "@/assets/hero-pizza.jpg";
 import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
 import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
-import { SITE_URL, absoluteUrl } from "@/lib/seo";
+import { SITE_DESCRIPTION, SITE_TITLE, absoluteAssetUrl, absoluteUrl, restaurantJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Venerato Pizzas — Pizzaria Premium em São Paulo e Taboão da Serra" },
+      { title: SITE_TITLE },
       {
         name: "description",
-        content:
-          "Muito recheio, ingredientes selecionados e sabor de verdade. Peça sua pizza Venerato em Campo Limpo e Taboão da Serra.",
+        content: SITE_DESCRIPTION,
       },
       { property: "og:title", content: "Venerato Pizzas — Sabor que conquista" },
       { property: "og:description", content: "Pizzaria premium em São Paulo e Taboão. Faça seu pedido agora." },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: logoAsset.url },
+      { property: "og:image", content: absoluteAssetUrl(logoAsset.url) },
       { property: "og:url", content: absoluteUrl("/") },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:url", content: absoluteUrl("/") },
@@ -39,47 +38,7 @@ export const Route = createFileRoute("/")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify([
-          {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Venerato Pizzas",
-            url: SITE_URL,
-            logo: logoAsset.url,
-            sameAs: ["https://instagram.com/veneratopizzas"],
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Venerato Pizzas",
-            url: SITE_URL,
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "Restaurant",
-            name: "Venerato Pizzas",
-            servesCuisine: "Pizza",
-            image: logoAsset.url,
-            url: SITE_URL,
-            sameAs: ["https://instagram.com/veneratopizzas"],
-            address: [
-              {
-                "@type": "PostalAddress",
-                streetAddress: "Rua Eliane de Araújo Neves, 90",
-                addressLocality: "São Paulo",
-                addressRegion: "SP",
-                addressCountry: "BR",
-              },
-              {
-                "@type": "PostalAddress",
-                streetAddress: "Avenida Embaixador Assis Chateaubriand, 437",
-                addressLocality: "Taboão da Serra",
-                addressRegion: "SP",
-                addressCountry: "BR",
-              },
-            ],
-          },
-        ]),
+        children: JSON.stringify(restaurantJsonLd()),
       },
     ],
   }),

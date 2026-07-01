@@ -4,7 +4,7 @@ import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
 import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
 import logoAsset from "@/assets/venerato-logo.png.asset.json";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteAssetUrl, absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/localizacao")({
   head: () => ({
@@ -17,8 +17,10 @@ export const Route = createFileRoute("/localizacao")({
       },
       { property: "og:title", content: "Onde estamos — Venerato Pizzas" },
       { property: "og:description", content: "Unidades em Campo Limpo e Taboão da Serra." },
-      { property: "og:image", content: logoAsset.url },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: absoluteAssetUrl(logoAsset.url) },
       { property: "og:url", content: absoluteUrl("/localizacao") },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: absoluteUrl("/localizacao") }],
   }),
