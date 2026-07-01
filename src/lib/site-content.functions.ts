@@ -1,9 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
-import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_CONTENT, mergeContent, type SiteContent } from "./site-content";
+import { formatSiteContentValidationError, siteContentSchema } from "./site-content.schema";
 
 // Public read — uses publishable key + anon SELECT policy.
 export const getSiteContent = createServerFn({ method: "GET" }).handler(async (): Promise<SiteContent> => {
@@ -22,7 +22,13 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ()
       console.error("[site-content] read error", error);
       return DEFAULT_CONTENT;
     }
-    return mergeContent(data?.content as Partial<SiteContent> | null);
+    const merged = mergeContent(data?.content as Partial<SiteContent> | null);
+    const parsed = siteContentSchema.safeParse(merged);
+    if (!parsed.success) {
+      console.error("[site-content] invalid content", formatSiteContentValidationError(parsed.error));
+      return DEFAULT_CONTENT;
+    }
+    return parsed.data;
   } catch (e) {
     console.error("[site-content] unexpected", e);
     return DEFAULT_CONTENT;
@@ -30,13 +36,15 @@ export const getSiteContent = createServerFn({ method: "GET" }).handler(async ()
 });
 
 // Admin-only write — verifies caller is admin via RLS + has_role.
-const contentSchema = z.record(z.string(), z.unknown());
-
 export const updateSiteContent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { content: unknown }) => ({
-    content: contentSchema.parse(data.content),
-  }))
+  .inputValidator((data: { content: unknown }) => {
+    const parsed = siteContentSchema.safeParse(data.content);
+    if (!parsed.success) {
+      throw new Error(`Conteúdo inválido: ${formatSiteContentValidationError(parsed.error)}`);
+    }
+    return { content: parsed.data };
+  })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 

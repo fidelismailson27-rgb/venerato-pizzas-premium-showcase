@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getSiteContent, updateSiteContent } from "@/lib/site-content.functions";
+import { formatSiteContentValidationError, siteContentSchema } from "@/lib/site-content.schema";
 import {
   DEFAULT_CONTENT,
   type Destaque,
@@ -26,7 +27,16 @@ export const Route = createFileRoute("/_authenticated/admin")({
 // Limits (advisory)
 const IMG_LIMIT = 8 * 1024 * 1024; // 8 MB
 const VID_LIMIT = 25 * 1024 * 1024; // 25 MB
-const SIGNED_URL_TTL = 60 * 60 * 24 * 365 * 10; // ~10 years
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"] as const;
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm"] as const;
+const MIME_EXTENSION: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+};
 
 function formatBytes(n: number) {
   if (n < 1024) return `${n} B`;
@@ -81,10 +91,15 @@ function AdminPage() {
     setSaving(true);
     setStatus(null);
     try {
-      await saveContent({ data: { content } });
+      const parsed = siteContentSchema.safeParse(content);
+      if (!parsed.success) {
+        setStatus(`Erro: revise os campos do painel. ${formatSiteContentValidationError(parsed.error)}`);
+        return;
+      }
+      await saveContent({ data: { content: parsed.data } });
       setStatus("✓ Alterações salvas. O site já está atualizado.");
     } catch (e) {
-      setStatus("Erro: " + (e instanceof Error ? e.message : "tente novamente"));
+      setStatus("Erro ao salvar: " + (e instanceof Error ? e.message : "tente novamente"));
     } finally {
       setSaving(false);
     }
@@ -381,18 +396,62 @@ function MediaField({
   const [info, setInfo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  function validateFile(file: File) {
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+    const expectsVideo = accept.startsWith("video/");
+    const allowedTypes = expectsVideo ? ALLOWED_VIDEO_TYPES : ALLOWED_IMAGE_TYPES;
+    const limit = expectsVideo ? VID_LIMIT : IMG_LIMIT;
+
+    if (!isImage && !isVideo) {
+      return {
+        ok: false as const,
+        message: "Formato inválido. Envie uma imagem ou vídeo permitido.",
+      };
+    }
+
+    if ((expectsVideo && !isVideo) || (!expectsVideo && !isImage)) {
+      return {
+        ok: false as const,
+        message: expectsVideo
+          ? "Este campo aceita apenas vídeos MP4 ou WebM."
+          : "Este campo aceita apenas imagens JPG, PNG, WebP ou AVIF.",
+      };
+    }
+
+    if (!(allowedTypes as readonly string[]).includes(file.type)) {
+      return {
+        ok: false as const,
+        message: expectsVideo
+          ? "Formato de vídeo inválido. Use MP4 ou WebM."
+          : "Formato de imagem inválido. Use JPG, PNG, WebP ou AVIF.",
+      };
+    }
+
+    if (file.size > limit) {
+      return {
+        ok: false as const,
+        message: `Arquivo muito grande (${formatBytes(file.size)}). Limite: ${formatBytes(limit)} para ${
+          expectsVideo ? "vídeos" : "imagens"
+        }. Envie um arquivo menor.`,
+      };
+    }
+
+    return {
+      ok: true as const,
+      isVideo: expectsVideo,
+      extension: MIME_EXTENSION[file.type] ?? "bin",
+      contentType: file.type,
+    };
+  }
+
   async function upload(file: File) {
     setError(null);
     setInfo(`${file.name} · ${formatBytes(file.size)}`);
 
-    const isVideo = file.type.startsWith("video/");
-    const limit = isVideo ? VID_LIMIT : IMG_LIMIT;
-    if (file.size > limit) {
-      setError(
-        `Arquivo muito grande (${formatBytes(file.size)}). Limite: ${formatBytes(limit)} para ${
-          isVideo ? "vídeos" : "imagens"
-        }. Envie um arquivo menor.`,
-      );
+    const validation = validateFile(file);
+    if (!validation.ok) {
+      setError(validation.message);
       setProgress(null);
       return;
     }
@@ -400,10 +459,10 @@ function MediaField({
     try {
       setProgress(5);
       let blob: Blob = file;
-      let ext = file.name.split(".").pop() || "bin";
-      let contentType = file.type;
+      let ext = validation.extension;
+      let contentType = validation.contentType;
 
-      if (!isVideo && file.type !== "image/svg+xml" && file.type.startsWith("image/")) {
+      if (!validation.isVideo) {
         // Convert to WebP for smaller payloads
         setProgress(20);
         blob = await imageToWebP(file);
@@ -420,12 +479,8 @@ function MediaField({
       if (upErr) throw upErr;
 
       setProgress(80);
-      const { data: signed, error: signErr } = await supabase.storage
-        .from("media")
-        .createSignedUrl(path, SIGNED_URL_TTL);
-      if (signErr) throw signErr;
-
-      onChange(signed.signedUrl);
+      const { data: publicUrl } = supabase.storage.from("media").getPublicUrl(path);
+      onChange(publicUrl.publicUrl);
       setProgress(100);
       setTimeout(() => setProgress(null), 800);
     } catch (e) {
