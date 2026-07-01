@@ -4,6 +4,7 @@ import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
 import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
 import logoAsset from "@/assets/venerato-logo.png.asset.json";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/localizacao")({
   head: () => ({
