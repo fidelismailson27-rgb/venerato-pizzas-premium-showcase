@@ -5,6 +5,7 @@ import heroPizza from "@/assets/hero-pizza.jpg";
 import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
 import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
+import { SITE_URL, absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,12 +20,13 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Pizzaria premium em São Paulo e Taboão. Faça seu pedido agora." },
       { property: "og:type", content: "website" },
       { property: "og:image", content: logoAsset.url },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: absoluteUrl("/") },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:url", content: absoluteUrl("/") },
       { name: "theme-color", content: "#0F1115" },
     ],
     links: [
-      { rel: "canonical", href: "/" },
+      { rel: "canonical", href: absoluteUrl("/") },
       { rel: "icon", href: logoAsset.url },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -37,31 +39,47 @@ export const Route = createFileRoute("/")({
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Restaurant",
-          name: "Venerato Pizzas",
-          servesCuisine: "Pizza",
-          image: logoAsset.url,
-          url: "/",
-          sameAs: ["https://instagram.com/veneratopizzas"],
-          address: [
-            {
-              "@type": "PostalAddress",
-              streetAddress: "Rua Eliane de Araújo Neves, 90",
-              addressLocality: "São Paulo",
-              addressRegion: "SP",
-              addressCountry: "BR",
-            },
-            {
-              "@type": "PostalAddress",
-              streetAddress: "Avenida Embaixador Assis Chateaubriand, 437",
-              addressLocality: "Taboão da Serra",
-              addressRegion: "SP",
-              addressCountry: "BR",
-            },
-          ],
-        }),
+        children: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Venerato Pizzas",
+            url: SITE_URL,
+            logo: logoAsset.url,
+            sameAs: ["https://instagram.com/veneratopizzas"],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Venerato Pizzas",
+            url: SITE_URL,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Restaurant",
+            name: "Venerato Pizzas",
+            servesCuisine: "Pizza",
+            image: logoAsset.url,
+            url: SITE_URL,
+            sameAs: ["https://instagram.com/veneratopizzas"],
+            address: [
+              {
+                "@type": "PostalAddress",
+                streetAddress: "Rua Eliane de Araújo Neves, 90",
+                addressLocality: "São Paulo",
+                addressRegion: "SP",
+                addressCountry: "BR",
+              },
+              {
+                "@type": "PostalAddress",
+                streetAddress: "Avenida Embaixador Assis Chateaubriand, 437",
+                addressLocality: "Taboão da Serra",
+                addressRegion: "SP",
+                addressCountry: "BR",
+              },
+            ],
+          },
+        ]),
       },
     ],
   }),

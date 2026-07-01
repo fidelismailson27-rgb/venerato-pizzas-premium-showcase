@@ -4,6 +4,7 @@ import { getSiteContent } from "@/lib/site-content.functions";
 import { DEFAULT_CONTENT, type SiteContent } from "@/lib/site-content";
 import { SiteNav, SiteFooter, ExtLink } from "@/components/site-chrome";
 import logoAsset from "@/assets/venerato-logo.png.asset.json";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/cardapio")({
   head: () => ({
@@ -18,8 +19,9 @@ export const Route = createFileRoute("/cardapio")({
       { property: "og:description", content: "Pizzas, combos, empadas, pudim e bebidas." },
       { property: "og:type", content: "website" },
       { property: "og:image", content: logoAsset.url },
+      { property: "og:url", content: absoluteUrl("/cardapio") },
     ],
-    links: [{ rel: "canonical", href: "/cardapio" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/cardapio") }],
   }),
   loader: () => getSiteContent(),
   component: CardapioPage,
